@@ -24,7 +24,7 @@ class Genre(Base):
     name = Column(String(250), nullable=False)
 
     @property
-    def serialze(self):
+    def serialize(self):
       # Return object data in easily serializable format
       return {
         'id': self.id,
@@ -42,7 +42,7 @@ class Song(Base):
     youtube_id = Column(String(250))
     date_added = Column(Date, default = datetime.datetime.now())
     # Linking Genre to song
-    genre_id = Column(Integer,ForeignKey('genre.id'))
+    genre_id = Column(Integer, ForeignKey('genre.id'))
     genre = relationship(Genre)
     # Linking user to song
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -57,7 +57,7 @@ class Song(Base):
           'name' : self.name,
           'artist_name' : self.artist_name,
           'youtube_id' : self.youtube_id,
-          'date_added' : self.date_added,
+          'date_added' : self.date_added.isoformat(),
        }
 
 
