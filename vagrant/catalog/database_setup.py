@@ -38,6 +38,7 @@ class Song(Base):
     id = Column(Integer, primary_key = True)
     name = Column(String(250), nullable = False)
     artist_name = Column(String(250), nullable = False)
+    # Will only be storing youtube video id, since there is a possiblty url could change
     youtube_id = Column(String(250))
     date_added = Column(Date, default = datetime.datetime.now())
     # Linking Genre to song
