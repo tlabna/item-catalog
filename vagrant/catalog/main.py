@@ -18,7 +18,11 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-#JSON APIs to view Music Information
+#######################################
+#
+# JSON APIs to view Music Information
+#
+#######################################
 @app.route('/genre/<int:genre_id>/JSON')
 def genreJSON(genre_id):
     genre = session.query(Genre).filter_by(id = genre_id).one()
@@ -39,6 +43,25 @@ def songJSON(genre_id, song_id):
 def allGenreJSON():
     genres = session.query(Genre).all()
     return jsonify(genres = [i.serialize for i in genres])
+
+
+############################
+#
+# Template rendering
+#
+############################
+# Show all genres
+@app.route('/')
+def showGenres():
+    songs = session.query(Song).order_by(asc(Song.name))
+    genres = session.query(Genre).order_by(asc(Genre.name))
+    return render_template('main.html', songs = songs, genres = genres)
+
+@app.route('/genre/<int:genre_id>/')
+def showGenreSongs(genre_id):
+    genres = session.query(Genre).order_by(asc(Genre.name))
+    songs = session.query(Song).filter_by(genre_id = genre_id)
+    return render_template('songs.html', genres = genres, songs = songs)
 
 
 if __name__ == '__main__':

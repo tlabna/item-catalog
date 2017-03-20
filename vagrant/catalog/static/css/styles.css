@@ -1,0 +1,77 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+
+/** {
+    border: 1px solid red !important;
+}*/
+
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+/* base.html */
+.navbar-custom {
+    background-color: #303F9F;
+    border-radius:0;
+    color: #FFF;
+}
+
+.navbar-custom .navbar-brand {
+    color: #FFF;
+}
+
+.icon-bar-custom {
+    background-color: #FFF !important;
+}
+
+/* front.html */
+@media (max-width: 767px) {
+    .genre-item {
+        color: #FFF !important;
+    }
+}
+
+.genres {
+    padding: 0;
+    margin: -5px;
+}
+
+#card a {
+    color: #000;
+}
+
+#card{
+    position: relative;
+    display: inline-block;
+    height: 0;
+    width: 100%;
+    padding-top: 100%;
+    height: auto;
+    background-color: #E57373;
+    text-align: center;
+    margin: 1.66%;
+}
+
+@media (min-width: 480px) {
+  #card {
+    width: 33.3333%;
+    padding-top: 33.3333%;
+  }
+}
+@media (min-width: 768px) {
+  #card {
+    width: 25%;
+    padding-top: 25%;
+  }
+}
+
+.card-content {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: 10px;
+}
