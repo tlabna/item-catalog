@@ -61,7 +61,8 @@ def showGenres():
 def showGenreSongs(genre_id):
     genres = session.query(Genre).order_by(asc(Genre.name))
     songs = session.query(Song).filter_by(genre_id = genre_id)
-    return render_template('songs.html', genres = genres, songs = songs)
+    current_genre = session.query(Genre).filter_by(id = genre_id).one()
+    return render_template('public_songs.html', genres = genres, songs = songs, curr_genre = current_genre)
 
 
 if __name__ == '__main__':
