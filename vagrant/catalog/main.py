@@ -89,6 +89,22 @@ def editSong(genre_id, song_id):
         return render_template('editsong.html', genre = genre, genres = genres, song = editedSong)
 
 
+#Delete a menu item
+@app.route('/genre/<int:genre_id>/song/<int:song_id>/delete', methods = ['GET','POST'])
+def deleteSong(genre_id, song_id):
+    genre = session.query(Genre).filter_by(id = genre_id).one()
+    itemToDelete = session.query(Song).filter_by(id = song_id).one()
+    genres = session.query(Genre).order_by(asc(Genre.name))
+
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        session.commit()
+        flash('Successfully Deleted %s - %s' % (itemToDelete.name, itemToDelete.artist_name))
+        return redirect(url_for('showGenreSongs', genre_id = genre.id))
+    else:
+        return render_template('deletesong.html', song = itemToDelete, genres = genres)
+
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
