@@ -116,3 +116,12 @@ body {
 form {
     margin-bottom: 5px;
 }
+
+/* login.html */
+hr {
+    margin-top: 0;
+}
+
+#signInButton {
+    display: inline-block;
+}
