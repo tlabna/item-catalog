@@ -89,3 +89,17 @@ body {
     margin-bottom: 0;
     margin-top: 5px;
 }
+
+/* editsong.html */
+.music-form {
+    border: 1px solid #E9E9E9;
+    padding: 15px;
+}
+
+.grey-text {
+    color: grey;
+}
+
+form {
+    margin-bottom: 5px;
+}
