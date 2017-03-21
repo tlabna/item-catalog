@@ -23,11 +23,20 @@ body {
     background-color: #FFF !important;
 }
 
-/* front.html */
+/* main.html */
 @media (max-width: 767px) {
     .genre-item {
         color: #FFF !important;
     }
+}
+
+.add-song {
+    color: #FFF !important;
+}
+
+/* Change background color for hover and focus so that text is readable */
+.add-song:hover, .add-song:focus{
+    background-color: #2979FF !important;
 }
 
 .genres {

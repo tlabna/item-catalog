@@ -8,7 +8,7 @@
 <section class="row">
     <div class="col-xs-4 col-xs-offset-4 text-center">
         <div id="signInButton">
-            <span class="g-signin2" data-scope="openid email" data-clientid="141998948432-6bicc7mlmfot81nfqqalp0qfr6bkc0c2.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force" data-longtitle="true"></span>
+            <span class="g-signin" data-scope="openid email" data-clientid="141998948432-6bicc7mlmfot81nfqqalp0qfr6bkc0c2.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force"></span>
             <!-- Can disable data-approvalprompt for prodution code as 'force' forces sign in everytime -->
         </div>
         <div>
@@ -31,7 +31,8 @@
         if (authResult['code']) {
             // Hide the sign-in button now that the user is authorized
             $('#signinButton').attr('style', 'display: none');
-            // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
+            // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main page
+            console.log('Welcome!  Fetching your information.... ');
             $.ajax({
                 type: 'POST',
                 url: '/gconnect?state={{ STATE }}',
@@ -56,10 +57,7 @@
             });
         }
     }
-</script>
-
-<!-- Handling Facebook sign in -->
-<script>
+    // Handling Facebook sign in
     window.fbAsyncInit = function() {
         FB.init({
             appId: '282853822150061',
@@ -108,5 +106,5 @@
             });
         });
     }
-    </script>
+</script>
 {% endblock %}
