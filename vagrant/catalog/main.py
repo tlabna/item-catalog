@@ -83,7 +83,7 @@ def editSong(genre_id, song_id):
             editedSong.genre_id = request.form['genre_id']
         session.add(editedSong)
         session.commit()
-        flash('Song Successfully Edited')
+        flash('Successfully Edited %s - %s' % (editedSong.name, editedSong.artist_name))
         return redirect(url_for('showGenreSongs', genre_id = editedSong.genre_id))
     else:
         return render_template('editsong.html', genre = genre, genres = genres, song = editedSong)

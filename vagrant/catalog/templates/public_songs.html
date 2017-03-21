@@ -1,6 +1,15 @@
 {% extends "base.html" %} {% block content %}
 <section class="row">
     <section class="col-xs-12 text-center">
+        <div class='flash'>
+            {% with messages = get_flashed_messages() %} {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li> <strong> {{ message }} </strong> </li>
+                {% endfor %}
+            </ul>
+            {% endif %} {% endwith %}
+        </div>
         <h1>{{ curr_genre.name }}</h1>
         <p>Here's a list of {{ curr_genre.name }} music songs submitted by our users.</p>
     </section>
@@ -14,7 +23,7 @@
                 <h4><small>{{ song.artist_name }}</small></h4>
                 <!-- 16:9 aspect ratio -->
                 <div class="embed-responsive embed-responsive-16by9">
-                  <iframe class="embed-responsive-item" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/{{ song.youtube_id }}"></iframe>
+                    <iframe class="embed-responsive-item" allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/{{ song.youtube_id }}"></iframe>
                 </div>
             </article>
             {% endfor %}
