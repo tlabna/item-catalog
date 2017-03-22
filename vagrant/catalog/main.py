@@ -440,7 +440,7 @@ def editSong(genre_id, song_id):
         return render_template('editsong.html', genre = genre, genres = genres, song = editedSong)
 
 
-#Delete a menu item
+# Delete a song
 @app.route('/genre/<int:genre_id>/song/<int:song_id>/delete', methods = ['GET','POST'])
 def deleteSong(genre_id, song_id):
     if 'username' not in login_session:
