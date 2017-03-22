@@ -358,6 +358,9 @@ def showGenreSongs(genre_id):
 # user added songs list
 @app.route('/mymusic')
 def userSongs():
+    if 'username' not in login_session:
+        return redirect('/login')
+
     genres = session.query(Genre).order_by(asc(Genre.name))
     user_id = getUserID(login_session['email'])
     songs = session.query(Song).filter_by(user_id = user_id)
@@ -368,10 +371,11 @@ def userSongs():
 # Add Song
 @app.route('/add-song/', methods=['GET', 'POST'])
 def addSong():
-    genres = session.query(Genre).order_by(asc(Genre.name))
     # Check if user is logged in
     if 'username' not in login_session:
         return redirect('/login')
+
+    genres = session.query(Genre).order_by(asc(Genre.name))
 
     if request.method == 'POST':
         if request.form['youtube_url']:
@@ -394,9 +398,24 @@ def addSong():
     else:
         return render_template('addsong.html', genres = genres)
 
-@app.route('/genre/<int:genre_id>/song/<int:song_id>/', methods=['GET', 'POST'])
+@app.route('/genre/<int:genre_id>/song/<int:song_id>/edit', methods=['GET', 'POST'])
 def editSong(genre_id, song_id):
+    if 'username' not in login_session:
+        return redirect('/login')
+
     editedSong = session.query(Song).filter_by(id = song_id).one()
+
+    luser_id = getUserID(login_session['email'])
+    if editedSong.user_id != luser_id:
+        # Redirect to homepage if user ids do not match
+        return '''<script>
+            function myFunction() {
+                alert('You are not authorized to edit this song.');
+                window.location.replace('/');
+                }
+        </script>
+        <body onload='myFunction()'>'''
+
     genre = session.query(Genre).filter_by(id = genre_id).one()
     genres = session.query(Genre).order_by(asc(Genre.name))
 
@@ -422,8 +441,23 @@ def editSong(genre_id, song_id):
 #Delete a menu item
 @app.route('/genre/<int:genre_id>/song/<int:song_id>/delete', methods = ['GET','POST'])
 def deleteSong(genre_id, song_id):
-    genre = session.query(Genre).filter_by(id = genre_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+
     itemToDelete = session.query(Song).filter_by(id = song_id).one()
+
+    luser_id = getUserID(login_session['email'])
+    if itemToDelete.user_id != luser_id:
+        # Redirect to homepage if user ids do not match
+        return '''<script>
+            function myFunction() {
+                alert('You are not authorized to delete this song.');
+                window.location.replace('/');
+                }
+        </script>
+        <body onload='myFunction()'>'''
+
+    genre = session.query(Genre).filter_by(id = genre_id).one()
     genres = session.query(Genre).order_by(asc(Genre.name))
 
     if request.method == 'POST':
