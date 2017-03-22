@@ -355,6 +355,16 @@ def showGenreSongs(genre_id):
     return render_template('public_songs.html', genres = genres, songs = songs, curr_genre = current_genre)
 
 
+# user added songs list
+@app.route('/mymusic')
+def userSongs():
+    genres = session.query(Genre).order_by(asc(Genre.name))
+    user_id = getUserID(login_session['email'])
+    songs = session.query(Song).filter_by(user_id = user_id)
+
+    return render_template('user_songs.html', genres = genres, songs = songs)
+
+
 # Add Song
 @app.route('/add-song/', methods=['GET', 'POST'])
 def addSong():
@@ -404,7 +414,7 @@ def editSong(genre_id, song_id):
         session.add(editedSong)
         session.commit()
         flash('Successfully Edited %s - %s' % (editedSong.name, editedSong.artist_name))
-        return redirect(url_for('showGenreSongs', genre_id = editedSong.genre_id))
+        return redirect(url_for('userSongs'))
     else:
         return render_template('editsong.html', genre = genre, genres = genres, song = editedSong)
 
@@ -420,7 +430,7 @@ def deleteSong(genre_id, song_id):
         session.delete(itemToDelete)
         session.commit()
         flash('Successfully Deleted %s - %s' % (itemToDelete.name, itemToDelete.artist_name))
-        return redirect(url_for('showGenreSongs', genre_id = genre.id))
+        return redirect(url_for('userSongs'))
     else:
         return render_template('deletesong.html', song = itemToDelete, genres = genres)
 

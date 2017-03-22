@@ -36,11 +36,9 @@
                         </ul>
                     </li>
                     {% if 'username' in session %}
-                    <li class="pull-left"><a href="{{url_for('addSong')}}" class="add-song"><span class="glyphicon glyphicon-plus"></span> Add Song</a></li>
+                    <li><a href="{{url_for('addSong')}}" class="nav-option"><span class="glyphicon glyphicon-plus"></span> Add Song</a></li>
+                    <li><a href="{{url_for('userSongs')}}" class="nav-option"><span class="glyphicon glyphicon-music"></span> My Music</a></li>
                     {% endif %}
-                    <!-- <li>
-                        <a role="button" class="btn btn-default navbar-btn pull-right" href="/login">Sign in</a>
-                    </li> -->
                 </ul>
                 {% if 'username' not in session %}
                 <a role="button" class="btn btn-default navbar-btn pull-right" href="{{url_for('showLogin')}}">Sign in</a>
