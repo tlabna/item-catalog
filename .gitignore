@@ -1,0 +1,4 @@
+vagrant/catalog/*.pyc
+vagrant/catalog/client_secrets.json
+vagrant/catalog/fb_client_secrets.json
+vagrant/catalog/music.db
