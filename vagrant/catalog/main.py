@@ -363,7 +363,7 @@ def userSongs():
 
     genres = session.query(Genre).order_by(asc(Genre.name))
     user_id = getUserID(login_session['email'])
-    songs = session.query(Song).filter_by(user_id = user_id)
+    songs = session.query(Song).filter_by(user_id = user_id).all()
 
     return render_template('user_songs.html', genres = genres, songs = songs)
 
@@ -394,7 +394,7 @@ def addSong():
         session.add(new_song)
         session.commit()
         flash('Successfully Added %s - %s' % (new_song.name, new_song.artist_name))
-        return redirect(url_for('showGenreSongs', genre_id = new_song.genre_id))
+        return redirect(url_for('userSongs'))
     else:
         return render_template('addsong.html', genres = genres)
 

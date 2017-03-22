@@ -1,15 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <section class="row">
     <section class="col-xs-12 text-center">
-        <div class='flash'>
-            {% with messages = get_flashed_messages() %} {% if messages %}
-            <ul>
-                {% for message in messages %}
-                <li> <strong> {{ message }} </strong> </li>
-                {% endfor %}
-            </ul>
-            {% endif %} {% endwith %}
-        </div>
         <h1>{{ curr_genre.name }}</h1>
         <p>Here's a list of {{ curr_genre.name }} music songs submitted by our users.</p>
     </section>
