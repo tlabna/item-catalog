@@ -354,6 +354,36 @@ def showGenreSongs(genre_id):
     current_genre = session.query(Genre).filter_by(id = genre_id).one()
     return render_template('public_songs.html', genres = genres, songs = songs, curr_genre = current_genre)
 
+
+# Add Song
+@app.route('/add-song/', methods=['GET', 'POST'])
+def addSong():
+    genres = session.query(Genre).order_by(asc(Genre.name))
+    # Check if user is logged in
+    if 'username' not in login_session:
+        return redirect('/login')
+
+    if request.method == 'POST':
+        if request.form['youtube_url']:
+            # Decided to be more user friendly and ask users to enter a youtube url. Since the url is consistent and only the query_id changes, I extract the query id from the url
+            youtube_id = request.form['youtube_url'].split("v=", 1)[1]
+        if request.form['genre_id']:
+            genre_id = request.form['genre_id']
+
+        user_id = getUserID(login_session['email'])
+
+        new_song = Song(name = request.form['song-name'],
+                        artist_name = request.form['artist-name'],
+                        youtube_id = youtube_id,
+                        genre_id = genre_id,
+                        user_id = user_id)
+        session.add(new_song)
+        session.commit()
+        flash('Successfully Added %s - %s' % (new_song.name, new_song.artist_name))
+        return redirect(url_for('showGenreSongs', genre_id = new_song.genre_id))
+    else:
+        return render_template('addsong.html', genres = genres)
+
 @app.route('/genre/<int:genre_id>/song/<int:song_id>/', methods=['GET', 'POST'])
 def editSong(genre_id, song_id):
     editedSong = session.query(Song).filter_by(id = song_id).one()

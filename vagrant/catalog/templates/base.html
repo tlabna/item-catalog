@@ -36,7 +36,7 @@
                         </ul>
                     </li>
                     {% if 'username' in session %}
-                    <li class="pull-left"><a href="#" class="add-song"><span class="glyphicon glyphicon-plus"></span> Add Song</a></li>
+                    <li class="pull-left"><a href="{{url_for('addSong')}}" class="add-song"><span class="glyphicon glyphicon-plus"></span> Add Song</a></li>
                     {% endif %}
                     <!-- <li>
                         <a role="button" class="btn btn-default navbar-btn pull-right" href="/login">Sign in</a>
