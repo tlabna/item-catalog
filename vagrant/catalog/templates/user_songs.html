@@ -10,8 +10,7 @@
             </ul>
             {% endif %} {% endwith %}
         </div>
-        <h1>My Music</h1>
-        {% if songs|length > 0 %}
+        <h1>My Music</h1> {% if songs|length > 0 %}
         <p>Here's a list of your added songs. Click the icons to edit/delete a song.</p>
         {% else %}
         <p>You haven't added any songs yet...</p>

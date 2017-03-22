@@ -27,58 +27,63 @@ session.commit()
 
 
 # Genres
-genre1 = Genre(name = "Jazz")
+genre1 = Genre(name="Jazz")
 
 session.add(genre1)
 session.commit()
 
-genre2 = Genre(name = "Hip Hop")
+genre2 = Genre(name="Hip Hop")
 
 session.add(genre2)
 session.commit()
 
-genre3 = Genre(name = "Pop")
+genre3 = Genre(name="Pop")
 
 session.add(genre3)
 session.commit()
 
-genre4 = Genre(name = "Rock")
+genre4 = Genre(name="Rock")
 
 session.add(genre4)
 session.commit()
 
-genre5 = Genre(name = "Country")
+genre5 = Genre(name="Country")
 
 session.add(genre5)
 session.commit()
 
 
 # Songs
-song1 = Song(name = "Morning Call", artist_name = "Nick Colionne", youtube_id = "QsuZPScE5uc", genre = genre1, user = user1)
+song1 = Song(name="Morning Call", artist_name="Nick Colionne",
+             youtube_id="QsuZPScE5uc", genre=genre1, user=user1)
 
 
 session.add(song1)
 session.commit()
 
-song2 = Song(name = "Black Beatles", artist_name = "Rae Sremmurd", youtube_id = "b8m9zhNAgKs", genre = genre2, user = user1)
+song2 = Song(name="Black Beatles", artist_name="Rae Sremmurd",
+             youtube_id="b8m9zhNAgKs", genre=genre2, user=user1)
 
 
 session.add(song2)
 session.commit()
 
-song3 = Song(name = "Shape of You", artist_name = "Ed Sheeran", youtube_id = "JGwWNGJdvx8", genre = genre3, user = user1)
+song3 = Song(name="Shape of You", artist_name="Ed Sheeran",
+             youtube_id="JGwWNGJdvx8", genre=genre3, user=user1)
 
 
 session.add(song3)
 session.commit()
 
-song4 = Song(name = "Stairway to Heaven", artist_name = "Led Zeppelin", youtube_id = "IS6n2Hx9Ykk", genre = genre4, user = user1)
+song4 = Song(name="Stairway to Heaven", artist_name="Led Zeppelin",
+             youtube_id="IS6n2Hx9Ykk", genre=genre4, user=user1)
 
 
 session.add(song4)
 session.commit()
 
-song4 = Song(name = "Body Like a Back Road", artist_name = "Sam Hunt", youtube_id = "Mdh2p03cRfw", genre = genre5, user = user1)
+song4 = Song(name="Body Like a Back Road", artist_name="Sam Hunt",
+             youtube_id="Mdh2p03cRfw", genre=genre5, user=user1)
 
 
 session.add(song4)

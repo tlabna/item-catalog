@@ -8,10 +8,12 @@ body {
     font-family: 'Lato', sans-serif;
 }
 
+
 /* base.html */
+
 .navbar-custom {
     background-color: #303F9F;
-    border-radius:0;
+    border-radius: 0;
     color: #FFF;
 }
 
@@ -23,7 +25,9 @@ body {
     background-color: #FFF !important;
 }
 
+
 /* main.html */
+
 @media (max-width: 767px) {
     .genre-item {
         color: #FFF !important;
@@ -34,8 +38,11 @@ body {
     color: #FFF !important;
 }
 
+
 /* Change background color for hover and focus so that text is readable */
-.nav-option:hover, .nav-option:focus{
+
+.nav-option:hover,
+.nav-option:focus {
     background-color: #2979FF !important;
 }
 
@@ -48,7 +55,7 @@ body {
     color: #000;
 }
 
-#card{
+#card {
     position: relative;
     display: inline-block;
     height: 0;
@@ -61,31 +68,34 @@ body {
 }
 
 @media (min-width: 480px) {
-  #card {
-    width: 33.3333%;
-    padding-top: 33.3333%;
-  }
+    #card {
+        width: 33.3333%;
+        padding-top: 33.3333%;
+    }
 }
+
 @media (min-width: 768px) {
-  #card {
-    width: 25%;
-    padding-top: 25%;
-  }
+    #card {
+        width: 25%;
+        padding-top: 25%;
+    }
 }
 
 .card-content {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  margin: 10px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: 10px;
 }
 
+
 /* public_songs.html, user_songs.html */
+
 .song {
     border-top: 1px solid #E9E9E9;
     margin-bottom: 20px;
@@ -105,7 +115,8 @@ body {
     margin-bottom: 8px;
 }
 
-.song-details h3, .song-details div {
+.song-details h3,
+.song-details div {
     display: inline-block;
 }
 
@@ -123,18 +134,18 @@ body {
 
 .flash {
     background-color: #98FB98;
-    width:100%;
+    width: 100%;
     text-decoration: none;
-
 }
 
 .flash li {
     list-style-type: none;
     text-align: center;
-
 }
 
+
 /* editsong.html, deletesong.html */
+
 .music-form {
     border: 1px solid #E9E9E9;
     padding: 15px;
@@ -148,7 +159,9 @@ form {
     margin-bottom: 5px;
 }
 
+
 /* login.html */
+
 hr {
     margin-top: 0;
 }
