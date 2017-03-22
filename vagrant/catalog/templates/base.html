@@ -41,7 +41,7 @@
                     {% endif %}
                 </ul>
                 {% if 'username' not in session %}
-                <a role="button" class="btn btn-default navbar-btn pull-right" href="{{url_for('showLogin')}}">Sign in</a>
+                <a role="button" class="btn btn-default navbar-btn pull-right" href="{{url_for('showLogin')}}">Login</a>
                 {% else %}
                 <a role="button" class="btn btn-default navbar-btn pull-right" href="{{url_for('logout')}}">Logout</a>
                 {% endif %}
