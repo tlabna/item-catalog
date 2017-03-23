@@ -1,25 +1,25 @@
-from flask import Flask, render_template, request, redirect,jsonify, url_for, flash
-import datetime
-
-app = Flask(__name__)
-
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 # Importing NoResultFound for error handling of query
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, Genre, Song, User
-
 # import for anti forgery state token
 from flask import session as login_session
-import random, string
-
 # IMPORTS FOR gconnect
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from flask import make_response
+import datetime
+import random
+import string
 import httplib2
 import json
-from flask import make_response
 import requests
+from flask import Flask, render_template, request, redirect, jsonify, \
+    url_for, flash
+
+
+app = Flask(__name__)
 
 
 CLIENT_ID = json.loads(
@@ -27,7 +27,7 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = "Restaurant Menu App"
 
 
-#Connect to Database and create database session
+# Connect to Database and create database session
 engine = create_engine('sqlite:///music.db')
 Base.metadata.bind = engine
 
@@ -39,6 +39,8 @@ session = DBSession()
 # USER Helper Functions
 #
 #####################################
+
+
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
@@ -67,16 +69,21 @@ def getUserID(email):
 #####################################
 # Create a state token to prevent request forgery
 # Store it in the session for later validation
+
+
 @app.route('/login')
 def showLogin():
-  state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
-  login_session['state'] = state
-  # return 'The current session state is %s' %login_session['state']
-  genres = session.query(Genre).order_by(asc(Genre.name))
+    state = ''.join(random.choice(string.ascii_uppercase +
+                                  string.digits) for x in xrange(32))
+    login_session['state'] = state
+    # return 'The current session state is %s' %login_session['state']
+    genres = session.query(Genre).order_by(asc(Genre.name))
 
-  return render_template('login.html', STATE = state, genres = genres)
+    return render_template('login.html', STATE=state, genres=genres)
 
 # Google Sign in
+
+
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -129,7 +136,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
+        response = make_response(json.dumps('Current user is already'
+                                            'connected.'),
                                  200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -154,7 +162,7 @@ def gconnect():
     # See if user exists, it it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
-      user_id = createUser(login_session)
+        user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
     output = ''
@@ -163,7 +171,7 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '  # noqa
     flash("You are now logged in as %s" % login_session['username'])
     return output
 
@@ -182,30 +190,33 @@ def gdisconnect():
     print login_session['username']
 
     if access_token is None:
-      print 'Access Token is None'
-      response = make_response(json.dumps('Current user not connected.'), 401)
-      response.headers['Content-Type'] = 'application/json'
-      return response
+        print 'Access Token is None'
+        response = make_response(json.dumps('Current user not connected.'),
+                                 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % \
+        login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print 'result is '
     print result
 
     if result['status'] == '200':
-      del login_session['access_token']
-      del login_session['gplus_id']
-      del login_session['username']
-      del login_session['email']
-      del login_session['picture']
-      response = make_response(json.dumps('Successfully disconnected.'), 200)
-      response.headers['Content-Type'] = 'application/json'
-      return response
+        del login_session['access_token']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
     else:
-      response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-      response.headers['Content-Type'] = 'application/json'
-      return response
+        response = make_response(json.dumps('Failed to revoke token for'
+                                            'given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
 
 # Facebook Sign in
@@ -222,8 +233,7 @@ def fbconnect():
         'web']['app_id']
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, access_token)  # noqa
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
@@ -231,7 +241,6 @@ def fbconnect():
     userinfo_url = "https://graph.facebook.com/v2.4/me"
     # strip expire tag from access token
     token = result.split("&")[0]
-
 
     url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
     h = httplib2.Http()
@@ -244,12 +253,14 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
-    # The token must be stored in the login_session in order to properly logout, let's strip out the information before the equals sign in our token
+    # The token must be stored in the login_session in order to properly
+    # logout, let's strip out the information before the equals sign
+    # in our token
     stored_token = token.split("=")[1]
     login_session['access_token'] = stored_token
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200' % token
+    url = 'https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200' % token  # noqa
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
@@ -269,7 +280,7 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '  # noqa
 
     flash("You are now logged in as %s" % login_session['username'])
     return output
@@ -281,7 +292,7 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)  # noqa
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -317,24 +328,27 @@ def logout():
 #######################################
 @app.route('/genre/<int:genre_id>/JSON')
 def genreJSON(genre_id):
-    genre = session.query(Genre).filter_by(id = genre_id).one()
-    songs = session.query(Song).filter_by(genre_id = genre_id).all()
-    return jsonify(songs = [i.serialize for i in songs])
+    genre = session.query(Genre).filter_by(id=genre_id).one()
+    songs = session.query(Song).filter_by(genre_id=genre_id).all()
+    return jsonify(songs=[i.serialize for i in songs])
+
 
 @app.route('/genre/<int:genre_id>/song/<int:song_id>/JSON')
 def songJSON(genre_id, song_id):
     try:
-        song = session.query(Song).filter_by(id = song_id, genre_id = genre_id).one()
+        song = session.query(Song).filter_by(id=song_id,
+                                             genre_id=genre_id).one()
     # Adding error handling if no result is found.
     except NoResultFound:
-        return jsonify({'error' : 'Genre and song do not match!'})
+        return jsonify({'error': 'Genre and song do not match!'})
 
     return jsonify(song.serialize)
+
 
 @app.route('/genre/JSON')
 def allGenreJSON():
     genres = session.query(Genre).all()
-    return jsonify(genres = [i.serialize for i in genres])
+    return jsonify(genres=[i.serialize for i in genres])
 
 
 ############################
@@ -347,14 +361,16 @@ def allGenreJSON():
 def showGenres():
     songs = session.query(Song).order_by(asc(Song.name))
     genres = session.query(Genre).order_by(asc(Genre.name))
-    return render_template('main.html', songs = songs, genres = genres)
+    return render_template('main.html', songs=songs, genres=genres)
+
 
 @app.route('/genre/<int:genre_id>/')
 def showGenreSongs(genre_id):
     genres = session.query(Genre).order_by(asc(Genre.name))
-    songs = session.query(Song).filter_by(genre_id = genre_id)
-    current_genre = session.query(Genre).filter_by(id = genre_id).one()
-    return render_template('public_songs.html', genres = genres, songs = songs, curr_genre = current_genre)
+    songs = session.query(Song).filter_by(genre_id=genre_id)
+    current_genre = session.query(Genre).filter_by(id=genre_id).one()
+    return render_template('public_songs.html', genres=genres, songs=songs,
+                           curr_genre=current_genre)
 
 
 # user added songs list
@@ -365,9 +381,9 @@ def userSongs():
 
     genres = session.query(Genre).order_by(asc(Genre.name))
     user_id = getUserID(login_session['email'])
-    songs = session.query(Song).filter_by(user_id = user_id).all()
+    songs = session.query(Song).filter_by(user_id=user_id).all()
 
-    return render_template('user_songs.html', genres = genres, songs = songs)
+    return render_template('user_songs.html', genres=genres, songs=songs)
 
 
 # Add Song
@@ -381,31 +397,36 @@ def addSong():
 
     if request.method == 'POST':
         if request.form['youtube_url']:
-            # Decided to be more user friendly and ask users to enter a youtube url. Since the url is consistent and only the query_id changes, I extract the query id from the url
+            # Decided to be more user friendly and ask users to enter a
+            # youtube url. Since the url is consistent and only the query_id
+            # changes, I extract the query id from the url
             youtube_id = request.form['youtube_url'].split("v=", 1)[1]
         if request.form['genre_id']:
             genre_id = request.form['genre_id']
 
         user_id = getUserID(login_session['email'])
 
-        new_song = Song(name = request.form['song-name'],
-                        artist_name = request.form['artist-name'],
-                        youtube_id = youtube_id,
-                        genre_id = genre_id,
-                        user_id = user_id)
+        new_song = Song(name=request.form['song-name'],
+                        artist_name=request.form['artist-name'],
+                        youtube_id=youtube_id,
+                        genre_id=genre_id,
+                        user_id=user_id)
         session.add(new_song)
         session.commit()
-        flash('Successfully Added %s - %s' % (new_song.name, new_song.artist_name))
+        flash('Successfully Added %s - %s'
+              % (new_song.name, new_song.artist_name))
         return redirect(url_for('userSongs'))
     else:
-        return render_template('addsong.html', genres = genres)
+        return render_template('addsong.html', genres=genres)
 
-@app.route('/genre/<int:genre_id>/song/<int:song_id>/edit', methods=['GET', 'POST'])
+
+@app.route('/genre/<int:genre_id>/song/<int:song_id>/edit',
+           methods=['GET', 'POST'])
 def editSong(genre_id, song_id):
     if 'username' not in login_session:
         return redirect('/login')
 
-    editedSong = session.query(Song).filter_by(id = song_id).one()
+    editedSong = session.query(Song).filter_by(id=song_id).one()
 
     luser_id = getUserID(login_session['email'])
     if editedSong.user_id != luser_id:
@@ -418,7 +439,7 @@ def editSong(genre_id, song_id):
         </script>
         <body onload='myFunction()'>'''
 
-    genre = session.query(Genre).filter_by(id = genre_id).one()
+    genre = session.query(Genre).filter_by(id=genre_id).one()
     genres = session.query(Genre).order_by(asc(Genre.name))
 
     if request.method == 'POST':
@@ -427,26 +448,31 @@ def editSong(genre_id, song_id):
         if request.form['artist-name']:
             editedSong.artist_name = request.form['artist-name']
         if request.form['youtube_url']:
-            # Decided to be more user friendly and ask users to enter a youtube url. Since the url is consistent and only the query_id changes, I extract the query id from the url
+            # Decided to be more user friendly and ask users to enter a
+            # youtube url. Since the url is consistent and only the query_id
+            # changes, I extract the query id from the url
             youtube_id = request.form['youtube_url'].split("v=", 1)[1]
             editedSong.youtube_id = youtube_id
         if request.form['genre_id']:
             editedSong.genre_id = request.form['genre_id']
         session.add(editedSong)
         session.commit()
-        flash('Successfully Edited %s - %s' % (editedSong.name, editedSong.artist_name))
+        flash('Successfully Edited %s - %s' % (editedSong.name,
+                                               editedSong.artist_name))
         return redirect(url_for('userSongs'))
     else:
-        return render_template('editsong.html', genre = genre, genres = genres, song = editedSong)
+        return render_template('editsong.html', genre=genre, genres=genres,
+                               song=editedSong)
 
 
 # Delete a song
-@app.route('/genre/<int:genre_id>/song/<int:song_id>/delete', methods = ['GET','POST'])
+@app.route('/genre/<int:genre_id>/song/<int:song_id>/delete',
+           methods=['GET', 'POST'])
 def deleteSong(genre_id, song_id):
     if 'username' not in login_session:
         return redirect('/login')
 
-    itemToDelete = session.query(Song).filter_by(id = song_id).one()
+    itemToDelete = session.query(Song).filter_by(id=song_id).one()
 
     luser_id = getUserID(login_session['email'])
     if itemToDelete.user_id != luser_id:
@@ -459,16 +485,18 @@ def deleteSong(genre_id, song_id):
         </script>
         <body onload='myFunction()'>'''
 
-    genre = session.query(Genre).filter_by(id = genre_id).one()
+    genre = session.query(Genre).filter_by(id=genre_id).one()
     genres = session.query(Genre).order_by(asc(Genre.name))
 
     if request.method == 'POST':
         session.delete(itemToDelete)
         session.commit()
-        flash('Successfully Deleted %s - %s' % (itemToDelete.name, itemToDelete.artist_name))
+        flash('Successfully Deleted %s - %s' % (itemToDelete.name,
+                                                itemToDelete.artist_name))
         return redirect(url_for('userSongs'))
     else:
-        return render_template('deletesong.html', song = itemToDelete, genres = genres)
+        return render_template('deletesong.html', song=itemToDelete,
+                               genres=genres)
 
 
 if __name__ == '__main__':
