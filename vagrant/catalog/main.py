@@ -9,6 +9,8 @@ from flask import session as login_session
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 from flask import make_response
+# Import required for function decorator. See: login_required()
+from functools import wraps
 import datetime
 import random
 import string
@@ -61,6 +63,19 @@ def getUserID(email):
         return user.id
     except:
         return None
+
+
+# Login decorator function
+# Source: http://flask.pocoo.org/docs/0.10/patterns/viewdecorators/
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash("Access Denied: Please login first.")
+            return redirect('/login')
+    return decorated_function
 
 ######################################
 #
@@ -375,10 +390,9 @@ def showGenreSongs(genre_id):
 
 # user added songs list
 @app.route('/mymusic')
+# Check if user is logged in
+@login_required
 def userSongs():
-    if 'username' not in login_session:
-        return redirect('/login')
-
     genres = session.query(Genre).order_by(asc(Genre.name))
     user_id = getUserID(login_session['email'])
     songs = session.query(Song).filter_by(user_id=user_id).all()
@@ -388,11 +402,9 @@ def userSongs():
 
 # Add Song
 @app.route('/add-song/', methods=['GET', 'POST'])
+# Check if user is logged in
+@login_required
 def addSong():
-    # Check if user is logged in
-    if 'username' not in login_session:
-        return redirect('/login')
-
     genres = session.query(Genre).order_by(asc(Genre.name))
 
     if request.method == 'POST':
@@ -422,10 +434,9 @@ def addSong():
 
 @app.route('/genre/<int:genre_id>/song/<int:song_id>/edit',
            methods=['GET', 'POST'])
+# Check if user is logged in
+@login_required
 def editSong(genre_id, song_id):
-    if 'username' not in login_session:
-        return redirect('/login')
-
     editedSong = session.query(Song).filter_by(id=song_id).one()
 
     luser_id = getUserID(login_session['email'])
@@ -468,10 +479,9 @@ def editSong(genre_id, song_id):
 # Delete a song
 @app.route('/genre/<int:genre_id>/song/<int:song_id>/delete',
            methods=['GET', 'POST'])
+# Check if user is logged in
+@login_required
 def deleteSong(genre_id, song_id):
-    if 'username' not in login_session:
-        return redirect('/login')
-
     itemToDelete = session.query(Song).filter_by(id=song_id).one()
 
     luser_id = getUserID(login_session['email'])
